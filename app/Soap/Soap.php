@@ -10,7 +10,7 @@ class Soap
     /**
      * @var string
      */
-    protected string $wsdl;
+    protected $wsdl;
 
     public function __construct(string $wsdl)
     {
