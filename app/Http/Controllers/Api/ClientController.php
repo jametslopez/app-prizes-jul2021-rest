@@ -14,12 +14,18 @@ class ClientController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index($campaignId)
+    public function index($campaignId, Request $request)
     {
-        $response = [];
+        $response = ["status" => false, "message" => '', "data" => ''];
 
-        dump($campaignId);
-        
+        $client = Client::where("campaign_id", $campaignId)
+                        ->where("email", $request->email)->first();
+
+        if ($client) {
+            $response['status'] = true;
+            $response['data'] = $client;
+        }
+
         return $response;
     }
 
