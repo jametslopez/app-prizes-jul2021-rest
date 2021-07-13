@@ -7,6 +7,8 @@ use Illuminate\Http\Request;
 
 use App\Models\Client;
 
+use App\Helpers\Helper;
+
 class ClientController extends Controller
 {
     /**
@@ -16,10 +18,15 @@ class ClientController extends Controller
      */
     public function index($campaignId, Request $request)
     {
+        $authorization = Helper::validateAuthorization($campaignId, $request);
+        if ($authorization !== true) {
+            return $authorization;
+        }
+
         $response = ["status" => false, "message" => '', "data" => ''];
 
         $client = Client::where("campaign_id", $campaignId)
-                        ->where("email", $request->email)->first();
+            ->where("email", $request->email)->first();
 
         if ($client) {
             $response['status'] = true;
@@ -45,17 +52,51 @@ class ClientController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store($campaignId, Request $request)
     {
-        $response = ['success' => true];
+        $authorization = Helper::validateAuthorization($campaignId, $request);
+        if ($authorization !== true) {
+            return $authorization;
+        }
 
-        $client = new Client();
-        $client->firstname = $request->firstname;
-        $client->lastname = $request->lastname;
-        $client->email = $request->email;
-        $client->mobile = $request->mobile;
-        $client->sendemail = $request->sendemail;
-        $client->save();
+        $response = ["status" => false, "message" => '', "data" => ''];
+
+        $validator_fields = [
+            'firstname' => 'required',
+            'lastname' => 'required',
+            'email' => 'required|email',
+            'mobile' => 'required',
+            'address' => 'required'
+        ];
+
+        $valid = \Validator::make($request->all(), $validator_fields);
+
+        if (!$valid->fails()) {
+
+            $client = Client::where("campaign_id", $campaignId)
+                        ->where("email", $request->email)->first();
+
+            if (!$client) {
+                $client = new Client();
+                $client->campaign_id = $campaignId;
+                $client->firstname = $request->firstname;
+                $client->lastname = $request->lastname;
+                $client->email = $request->email;
+                $client->mobile = $request->mobile;
+                $client->sendemail = $request->sendemail;
+                $client->save();
+
+                $response['status'] = true;
+                $response['data'] = $client->toArray();
+            } else {
+                $response['status'] = true;
+                $response['data'] = $client->toArray();
+                $response['message'] = 'The client is already in the database.';    
+            }
+        } else {
+            $response['status'] = false;
+            $response['message'] = 'Please make sure you have entered all the information. (*)';
+        }
 
         return $response;
     }

@@ -48,7 +48,9 @@ class Helper
         } elseif (!$campaignId || !is_numeric($campaignId)) {
             return Helper::handlerError('101');
         } else {
-            $campaign = Campaign::where("api_key", $authorization)->first();
+            $campaign = Campaign::where("api_key", $authorization)
+                ->where("id", $campaignId)
+                ->first();
             if (!$campaign) {
                 return Helper::handlerError('100');
             }
