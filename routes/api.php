@@ -17,3 +17,22 @@ use Illuminate\Support\Facades\Route;
 Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
+
+Route::group(['namespace' => 'Api'], function () {
+    Route::get('/clients', [
+        'as' => 'clients.index',
+        'uses' => 'ClientController@index'
+    ]);
+    Route::post('/clients', [
+        'as' => 'clients.store',
+        'uses' => 'ClientController@store'
+    ]);
+    Route::get('/clients/{client}', [
+        'as' => 'clients.shot',
+        'uses' => 'ClientController@show'
+    ]);
+    Route::put('/clients', [
+        'as' => 'clients.update',
+        'uses' => 'ClientController@update'
+    ]);
+});
