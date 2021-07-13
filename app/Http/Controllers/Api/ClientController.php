@@ -88,6 +88,8 @@ class ClientController extends Controller
 
                 $response['status'] = true;
                 $response['data'] = $client->toArray();
+
+                //to raul
             } else {
                 $response['status'] = true;
                 $response['data'] = $client->toArray();
