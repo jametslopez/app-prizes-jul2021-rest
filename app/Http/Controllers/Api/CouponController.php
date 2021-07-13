@@ -29,6 +29,15 @@ class CouponController extends Controller
     protected function getSoapData(string $method, string $result, array $data): array
     {
         $soap = new Soap(config('soap.wsdl_service_coupons'));
-        return $soap->execute($method, $result, $data);
+        $result = $soap->execute($method, $result, $data);
+        return $this->processData($result);
+    }
+
+    protected function processData(array $data): array
+    {
+        if (!$data['response']) {
+            $data['response'] = false;
+        }
+        return $data;
     }
 }
