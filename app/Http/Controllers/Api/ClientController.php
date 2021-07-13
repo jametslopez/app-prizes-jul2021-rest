@@ -81,9 +81,17 @@ class ClientController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(Request $request, Client $client)
     {
-        //
+        //dd($client);
+        $response = ['success' => true];
+        $client->firstname = $request->firstname;
+        $client->lastname = $request->lastname;
+        $client->email = $request->email;
+        $client->mobile = $request->mobile;
+        $client->sendemail = $request->sendemail;
+        $client->save();
+        return $response;
     }
 
     /**

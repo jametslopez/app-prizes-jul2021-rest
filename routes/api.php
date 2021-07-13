@@ -31,7 +31,7 @@ Route::group(['namespace' => 'Api'], function () {
         'as' => 'clients.shot',
         'uses' => 'ClientController@show'
     ]);
-    Route::put('/clients', [
+    Route::post('/clients/{client}', [
         'as' => 'clients.update',
         'uses' => 'ClientController@update'
     ]);
