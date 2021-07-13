@@ -17,7 +17,21 @@ class CouponController extends Controller
     public function use(Request $request)
     {
         $code = $request->request->get('code');
-        return $this->getSoapData('use', 'useResult', ['code' => $code]);
+        $name = $request->request->get('name', 'Raul');
+        $email = $request->request->get('email', 'u201603794@gmail.com');
+
+        $toSoap = [
+            'code' => $code,
+            'name' => $name,
+            'email' => $email,
+        ];
+
+        $result = $this->getSoapData('use', 'useResult', ['code' => $code]);
+        if ($result['response']) {
+            $this->sendMail('sendCongratsEmail', 'sendCongratsEmailResult', $toSoap);
+        }
+
+        return $result;
     }
 
     /**
@@ -39,5 +53,11 @@ class CouponController extends Controller
             $data['response'] = false;
         }
         return $data;
+    }
+
+    protected function sendMail(string $method, string $result, array $data)
+    {
+        $soap = new Soap(config('soap.wsdl_service_mail'));
+        $soap->execute($method, $result, $data);
     }
 }
