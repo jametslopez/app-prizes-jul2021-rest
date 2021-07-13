@@ -10,8 +10,9 @@ class Soap
     /**
      * @var string
      */
-    private $wsdl;
 
+    private $wsdl;
+    
     public function __construct(string $wsdl)
     {
         $this->wsdl = $wsdl;
