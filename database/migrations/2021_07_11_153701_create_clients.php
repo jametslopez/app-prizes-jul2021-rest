@@ -14,7 +14,7 @@ class CreateClients extends Migration
     public function up()
     {
         Schema::create('clients', function (Blueprint $table) {
-            $table->id();
+            $table->increments('id');
             $table->string('firstname')->nullable();
             $table->string('lastname')->nullable();
             $table->string('email');
@@ -22,6 +22,9 @@ class CreateClients extends Migration
             $table->string('address')->nullable();
             $table->boolean('sendemail')->nullable()->default(false);
             $table->timestamps();
+            $table->integer('campaign_id')->unsigned()->index();
+            // $table->bigInteger('user_id')->unsigned()->index();
+            $table->foreign('campaign_id')->references('id')->on('campaigns')->onDelete('cascade');
         });
     }
 

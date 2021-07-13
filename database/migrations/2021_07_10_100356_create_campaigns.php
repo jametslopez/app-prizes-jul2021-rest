@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateEntries extends Migration
+class CreateCampaigns extends Migration
 {
     /**
      * Run the migrations.
@@ -13,10 +13,11 @@ class CreateEntries extends Migration
      */
     public function up()
     {
-        Schema::create('entries', function (Blueprint $table) {
-            $table->id();
-            $table->decimal('amount');
-            $table->string('store');
+        Schema::create('campaigns', function (Blueprint $table) {
+            $table->increments('id');
+            $table->string('name');
+            $table->string('api_key');
+            $table->integer('minimun_amount');
             $table->timestamps();
         });
     }
@@ -28,6 +29,6 @@ class CreateEntries extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('entries');
+        Schema::dropIfExists('campaigns');
     }
 }

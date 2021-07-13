@@ -19,23 +19,31 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 });
 
 Route::group(['namespace' => 'Api'], function () {
-    Route::get('/clients', [
+    // Campaigns
+    Route::get('/{campaignId}/settings', [
+        'as' => 'campaigns.setting',
+        'uses' => 'CampaignController@setting'
+    ]);
+    
+    // Clients
+    Route::get('/{campaignId}/clients', [
         'as' => 'clients.index',
         'uses' => 'ClientController@index'
     ]);
-    Route::post('/clients', [
+    Route::post('/{campaignId}/clients', [
         'as' => 'clients.store',
         'uses' => 'ClientController@store'
     ]);
-    Route::get('/clients/{client}', [
+    Route::get('/{campaignId}/clients/{client}', [
         'as' => 'clients.shot',
         'uses' => 'ClientController@show'
     ]);
-    Route::post('/clients/{client}', [
+    Route::post('/{campaignId}/clients/{client}', [
         'as' => 'clients.update',
         'uses' => 'ClientController@update'
     ]);
 
+    // Valid DNI
     Route::post('/dni', [
         'as' => 'dni.index',
         'uses' => 'DniController@index'
