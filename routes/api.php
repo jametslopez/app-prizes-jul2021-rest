@@ -35,4 +35,9 @@ Route::group(['namespace' => 'Api'], function () {
         'as' => 'clients.update',
         'uses' => 'ClientController@update'
     ]);
+
+    Route::post('/dni', [
+        'as' => 'dni.index',
+        'uses' => 'DniController@index'
+    ]);
 });
