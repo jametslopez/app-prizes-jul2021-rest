@@ -17,7 +17,7 @@ class CouponController extends Controller
     public function use(Request $request)
     {
         $code = $request->request->get('code');
-        $name = $request->request->get('name', 'Raul');
+        $name = $request->request->get('firstname', 'Raul');
         $email = $request->request->get('email', 'u201603794@gmail.com');
 
         $toSoap = [
