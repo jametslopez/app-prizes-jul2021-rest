@@ -22,9 +22,17 @@ class Soap
         try {
             $soap = new SoapClient($this->wsdl);
             $data = $soap->$method($parameters);
-            return $data->$result;
+            return [
+                'status' => true,
+                'message' => 'ok',
+                'response' => $data->$result
+            ];
         } catch (SoapFault $e) {
-            return [];
+            return [
+                'status' => false,
+                'message' => $e->getMessage(),
+                'response' => null
+            ];
         }
     }
 }

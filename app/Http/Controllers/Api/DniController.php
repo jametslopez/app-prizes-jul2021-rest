@@ -11,29 +11,17 @@ class DniController extends Controller
 {
     public function index(Request $request)
     {
-        $status = true;
-        $message = 'ok';
-        $data = [];
-
         $validator = $this->dniValidator();
         if ($validator->fails()) {
-            $status = false;
-            $message = $validator->errors()->first();
-        } else {
-            $dni = $request->request->get('dni');
-            $data = $this->getSoapData($dni);
-
-            if (count($data) < 1) {
-                $status = false;
-                $message = 'Se produjo un error.';
-            }
+            return [
+                'status' => false,
+                'message' => $validator->errors()->first(),
+                'response' => [],
+            ];
         }
 
-        return [
-            'status' => $status,
-            'message' => $message,
-            'data' => $data
-        ];
+        $dni = $request->request->get('dni');
+        return $this->getSoapData($dni);
     }
 
     /**
@@ -42,9 +30,13 @@ class DniController extends Controller
      */
     protected function getSoapData(int $dni): array
     {
-        $soap = new Soap('https://soap.dsd-is213-2101-e42b.ml/dni?wsdl');
+        $soap = new Soap(config('soap.wsdl_service_dni'));
         $result = $soap->execute('search', 'searchResult', ['dni' => $dni]);
-        return $this->processData($result);
+        if (!$result['status']) {
+            $result['response'] = [];
+        }
+        $result['response'] = $this->processData($result['response']);
+        return $result;
     }
 
     /**

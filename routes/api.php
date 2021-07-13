@@ -48,4 +48,13 @@ Route::group(['namespace' => 'Api'], function () {
         'as' => 'dni.index',
         'uses' => 'DniController@index'
     ]);
+
+    Route::post('/coupons/search', [
+        'as' => 'coupons.search',
+        'uses' => 'CouponController@search'
+    ]);
+    Route::post('/coupons/use', [
+        'as' => 'coupons.use',
+        'uses' => 'CouponController@use'
+    ]);
 });
