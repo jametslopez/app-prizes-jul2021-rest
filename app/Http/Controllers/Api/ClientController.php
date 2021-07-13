@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Soap\Soap;
 use Illuminate\Http\Request;
 
 use App\Models\Client;
@@ -11,11 +12,6 @@ use App\Helpers\Helper;
 
 class ClientController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
     public function index($campaignId, Request $request)
     {
         $authorization = Helper::validateAuthorization($campaignId, $request);
@@ -36,22 +32,6 @@ class ClientController extends Controller
         return $response;
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
     public function store($campaignId, Request $request)
     {
         $authorization = Helper::validateAuthorization($campaignId, $request);
@@ -89,11 +69,16 @@ class ClientController extends Controller
                 $response['status'] = true;
                 $response['data'] = $client->toArray();
 
-                //to raul
+                $toSoap = [
+                    'email' => $client->email,
+                    'name' => $client->firstname,
+                ];
+
+                $this->getSoapData('sendWelcomeMail', 'sendWelcomeMailResult', $toSoap);
             } else {
                 $response['status'] = true;
                 $response['data'] = $client->toArray();
-                $response['message'] = 'The client is already in the database.';    
+                $response['message'] = 'The client is already in the database.';
             }
         } else {
             $response['status'] = false;
@@ -103,38 +88,8 @@ class ClientController extends Controller
         return $response;
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
     public function update(Request $request, Client $client)
     {
-        //dd($client);
         $response = ['success' => true];
         $client->firstname = $request->firstname;
         $client->lastname = $request->lastname;
@@ -145,14 +100,9 @@ class ClientController extends Controller
         return $response;
     }
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy($id)
+    protected function getSoapData(string $method, string $result, array $data)
     {
-        //
+        $soap = new Soap(config('soap.wsdl_service_mail'));
+        $soap->execute($method, $result, $data);
     }
 }
