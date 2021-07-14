@@ -34,10 +34,6 @@ Route::group(['namespace' => 'Api'], function () {
         'as' => 'clients.store',
         'uses' => 'ClientController@store'
     ]);
-    Route::get('/{campaignId}/clients/{client}', [
-        'as' => 'clients.shot',
-        'uses' => 'ClientController@show'
-    ]);
     Route::post('/{campaignId}/clients/{client}', [
         'as' => 'clients.update',
         'uses' => 'ClientController@update'
